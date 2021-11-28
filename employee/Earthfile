@@ -1,0 +1,22 @@
+VERSION 0.6
+FROM openjdk:17-jdk-alpine
+RUN apk add --update --no-cache gradle
+WORKDIR /employee
+
+deps:
+    COPY build.gradle ./
+    RUN gradle build
+
+build:
+    FROM +deps
+    COPY src src
+    RUN gradle build
+    RUN gradle install
+    SAVE ARTIFACT build/install/employee/bin AS LOCAL build/bin
+    SAVE ARTIFACT build/install/employee/lib AS LOCAL build/lib
+
+docker:
+    COPY +build/bin bin
+    COPY +build/lib lib
+    ENTRYPOINT ["/employee/bin/employee"]
+    SAVE IMAGE employee:latest

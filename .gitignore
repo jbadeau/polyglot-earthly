@@ -1,0 +1,9 @@
+.idea
+
+$node_modules
+gradle
+.gradle
+
+build
+target
+dist
